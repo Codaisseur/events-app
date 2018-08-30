@@ -45,8 +45,10 @@ export const createEvent = (data) => dispatch => {
 
 export const loadEvents = () => (dispatch, getState) => {
   if (getState().events) return
-  
+  const jwt = getState().currentUser
+
   request(`${baseUrl}/events`)
+    .set('Authorization', `Bearer ${jwt}`)
     .then(response => {
       dispatch(eventsFetched(response.body))
     })
@@ -56,17 +58,22 @@ export const loadEvents = () => (dispatch, getState) => {
 export const loadEvent = (id) => (dispatch, getState) => {
   const state = getState().event
   if (state && state.id === id) return
+  const jwt = getState().currentUser
   
   request(`${baseUrl}/events/${id}`)
+    .set('Authorization', `Bearer ${jwt}`)
     .then(response => {
       dispatch(eventFetched(response.body))
     })
     .catch(console.error)
 }
 
-export const updateEvent = (id, data) => dispatch => {
+export const updateEvent = (id, data) => (dispatch, getState) => {
+  const jwt = getState().currentUser
+  
   request
     .patch(`${baseUrl}/events/${id}`)
+    .set('Authorization', `Bearer ${jwt}`)
     .send(data)
     .then(response => {
       dispatch(eventUpdateSuccess(response.body))
@@ -74,9 +81,12 @@ export const updateEvent = (id, data) => dispatch => {
     .catch(console.error)
 }
 
-export const deleteEvent = id => dispatch => {
+export const deleteEvent = id => (dispatch, getState) => {
+  const jwt = getState().currentUser
+  
   request
     .delete(`${baseUrl}/events/${id}`)
+    .set('Authorization', `Bearer ${jwt}`)
     .then(response => {
       dispatch(eventDeleteSuccess(id))
     })
