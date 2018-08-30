@@ -4,7 +4,11 @@ import {createEvent} from '../actions/events'
 import EventForm from './EventForm'
 
 class CreateEventFormContainer extends React.PureComponent {
-  state = {}
+  state = {
+    name: '',
+    date: '',
+    description: ''
+  }
   
   onChange = (event) => {
     this.setState({
